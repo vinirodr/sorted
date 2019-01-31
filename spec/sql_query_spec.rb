@@ -34,6 +34,14 @@ describe Sorted::SQLQuery, 'decode' do
 
     expect(set).to eq(result)
   end
+
+  it 'should decode nulls first/last' do
+    sql = 'email ASC NULLS FIRST, phone ASC, name DESC NULLS LAST'
+    set = Sorted::SQLQuery.parse(sql)
+    result = Sorted::Set.new([['email', 'asc', 'nulls first'], ['phone', 'asc'], ['name', 'desc', 'nulls last']])
+
+    expect(set).to eq(result)
+  end
 end
 
 describe Sorted::SQLQuery, 'encode' do
@@ -55,6 +63,13 @@ describe Sorted::SQLQuery, 'encode' do
   it 'should return an sql sort string' do
     set = Sorted::Set.new([['email', 'desc'], ['name', 'desc'], ['phone', 'asc']])
     result = '`email` DESC, `name` DESC, `phone` ASC'
+
+    expect(Sorted::SQLQuery.encode(set, quoter)).to eq(result)
+  end
+
+  it 'should encode nulls first/last' do
+    set = Sorted::Set.new([['email', 'desc', 'nulls_last'], ['name', 'desc'], ['phone', 'asc', 'nulls_first']])
+    result = '`email` DESC NULLS LAST, `name` DESC, `phone` ASC NULLS FIRST'
 
     expect(Sorted::SQLQuery.encode(set, quoter)).to eq(result)
   end

@@ -5,7 +5,7 @@ module Sorted
   class URIQuery
     extend Parse
 
-    REGEXP = /(([a-z0-9._]+)_([asc|desc]+)|[a-z0-9._]+)/i
+    REGEXP = /(([a-z0-9._]+)_([asc|desc]+)_?(nulls_[first|last]+)?|[a-z0-9._]+)/i
 
     def self.parse(raw)
       split(raw, /!/) do |set, part|
